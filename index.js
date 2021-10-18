@@ -45,13 +45,15 @@ function hash(password, opts) {
         'sha512'
     );
 
-    return JSON.stringify({
-        hashMethod: 'pbkdf2-sha512',
-        salt: salt.toString('base64'),
-        hash: hash.toString('base64'),
-        keyLength,
-        iterations,
-    });
+    return Promise.resolve(
+        JSON.stringify({
+            hashMethod: 'pbkdf2-sha512',
+            salt: salt.toString('base64'),
+            hash: hash.toString('base64'),
+            keyLength,
+            iterations,
+        })
+    );
 }
 
 function verify(stored, input) {
@@ -72,7 +74,7 @@ function verify(stored, input) {
 
     const hashB = crypto.pbkdf2Sync(input, salt, iterations, keyLength, hfn);
 
-    return timingSafeEqual(hashB, hash);
+    return Promise.resolve(timingSafeEqual(hashB, hash));
 }
 
 function expired(stored, days, opts) {
